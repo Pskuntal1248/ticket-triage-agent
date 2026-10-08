@@ -1,0 +1,55 @@
+contract: v1
+name: ticket-triage
+version: 1.0.0
+description: "Support ticket triage. Classifies a ticket, applies fixed refund rules in code (under $50 auto, $50-$200 needs approval, over $200 escalates), and drafts or sends the reply. Adapted from RelayG (MIT, Royal Simpson Pinto)."
+kind: interactive
+
+runtime:
+  framework: langgraph
+  python: "3.12"
+  entrypoint: src/agent.py:graph
+  timeout_seconds: 300
+
+dependencies:
+  lockfile: requirements.lock
+
+inputs:
+  - name: ticket_id
+    type: text
+    label: "Ticket ID"
+    required: true
+  - name: subject
+    type: text
+    label: "Ticket subject"
+    required: true
+  - name: body
+    type: textarea
+    label: "Ticket text"
+    required: true
+  - name: customer_email
+    type: email
+    label: "Customer email (replies are drafted to this address)"
+    required: true
+  - name: escalation_channel
+    type: text
+    label: "Slack channel ID for escalations (optional)"
+    required: false
+
+permissions:
+  tools:
+    - gmail.draft
+    - gmail.send
+    - slack.send
+  models:
+    tier: standard
+
+approvals:
+  required_for:
+    - gmail.send
+    - slack.send
+
+triggers:
+  manual: true
+
+resources:
+  memory_mb: 512
