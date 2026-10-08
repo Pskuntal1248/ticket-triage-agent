@@ -2,6 +2,7 @@
 
 Adapted from RelayG (https://github.com/AgentPostmortem/RelayG), Copyright (c) 2026 Royal Simpson Pinto, MIT License.
 Modified: rewritten. Nothing is written to disk; every action is returned in state["actions"].
+Audit: reject empty, invalid and error gateway responses.
 """
 
 from __future__ import annotations
@@ -43,7 +44,9 @@ def payload(raw: Any) -> Any:
             raise ToolRefused(raw[:300]) from None
     if isinstance(raw, dict) and raw.get("successful") is False:
         raise ToolRefused(str(raw.get("error"))[:300])
-    return raw.get("data", raw) if isinstance(raw, dict) else raw
+    if not isinstance(raw, dict) or not raw or raw.get("isError") is True or raw.get("error"):
+        raise ToolRefused("Gateway returned an empty, invalid or error result")
+    return raw.get("data", raw)
 
 
 def reply_message(customer_email: str, subject: str, body: str) -> dict:
