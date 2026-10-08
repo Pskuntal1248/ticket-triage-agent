@@ -1,0 +1,11 @@
+ticket-triage
+Adapted from RelayG (https://github.com/AgentPostmortem/RelayG),
+Copyright (c) 2026 Royal Simpson Pinto, used under the MIT License (see LICENSE).
+RelayG is itself described by its author as a code-first rebuild of "Resolvd".
+
+Changes made for the Gravity platform:
+- relayg/nodes.py, relayg/graph.py, relayg/state.py, relayg/tools.py: rewritten or
+  modified (model via the Gravity LLM gateway, Gravity tools instead of mock disk tools,
+  approval-gated tools instead of langgraph interrupt(), no checkpointer, absolute imports).
+- relayg/policy.py: unchanged apart from the header notice.
+- agent.py, manifest.yaml, tests: new for this adaptation.
