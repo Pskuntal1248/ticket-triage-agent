@@ -1,5 +1,8 @@
-"""Entry point for Gravity: ticket-triage, adapted from RelayG (MIT, (c) 2026 Royal Simpson Pinto)."""
+"""Entry point for Gravity, adapted from RelayG (MIT, (c) 2026 Royal Simpson Pinto).
+Modified for audit: durable hosted tools and system/user separation.
+"""
 
+import json
 import os
 
 from langchain_mcp_adapters.client import MultiServerMCPClient
@@ -24,11 +27,24 @@ async def graph():
         "url": os.environ["GRAVITY_GATEWAY_URL"],
         "headers": {"Authorization": f"Bearer {token}"},
     }})
-    tools = {t.name: t for t in await client.get_tools()}  # only the tools in manifest.yaml
+    # AGENT_STANDARD section 8 requires durable hosted tools. The SDK is provided
+    # by Gravity, not a dependency. Off-platform only, use the documented MCP client.
+    try:
+        import gravity
+    except ModuleNotFoundError as exc:
+        if exc.name != "gravity":
+            raise
+        available = await client.get_tools()
+    else:
+        available = await gravity.tools()
+    tools = {t.name: t for t in available}
     structured = model.with_structured_output(Classification)
 
     async def classifier(subject: str, body: str) -> Classification:
-        result = await structured.ainvoke(CLASSIFIER_PROMPT.format(subject=subject, body=body))
+        result = await structured.ainvoke([
+            {"role": "system", "content": CLASSIFIER_PROMPT},
+            {"role": "user", "content": json.dumps({"subject": subject, "body": body})},
+        ])
         assert isinstance(result, Classification)
         return result
 
