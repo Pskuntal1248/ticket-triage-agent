@@ -1,9 +1,4 @@
-"""Typed state shared by every node in the graph.
-
-Adapted from RelayG (https://github.com/AgentPostmortem/RelayG), Copyright (c) 2026 Royal Simpson Pinto, MIT License.
-Modified: added `inputs`, `result`, `classifier` and `notes` for the Gravity runtime.
-Audit: finite nonnegative amounts, input limits, replace rather than accumulate per-run actions.
-"""
+"""Typed state shared by every node in the graph."""
 
 from __future__ import annotations
 

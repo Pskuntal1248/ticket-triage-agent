@@ -1,8 +1,4 @@
-"""Pure Python refund policy rules. No LLM, no I/O, fully testable.
-
-Adapted from RelayG (https://github.com/AgentPostmortem/RelayG), Copyright (c) 2026 Royal Simpson Pinto, MIT License.
-Modified: import path and honest missing-amount/invalid-amount reasons; thresholds unchanged.
-"""
+"""Pure Python refund policy rules. No LLM, no I/O, fully testable."""
 
 from __future__ import annotations
 

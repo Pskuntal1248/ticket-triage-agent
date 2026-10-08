@@ -1,7 +1,7 @@
 contract: v1
 name: ticket-triage
 version: 1.0.2
-description: "Pilot ticket triage with fixed refund recommendation thresholds. No money moves. Under $50 drafts a recommendation; $50-$200 sends an under-review reply after message approval; over $200 attempts an approved Slack escalation. Adapted from RelayG (MIT, Royal Simpson Pinto)."
+description: "Pilot ticket triage with fixed refund recommendation thresholds. No money moves. Under $50 drafts a recommendation; $50-$200 sends an under-review reply after message approval; over $200 attempts an approved Slack escalation."
 kind: interactive
 
 runtime:

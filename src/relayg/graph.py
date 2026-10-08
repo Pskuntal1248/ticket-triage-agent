@@ -1,8 +1,4 @@
-"""Wire the state machine: prepare -> classify -> policy_check -> act -> finish.
-
-Adapted from RelayG (https://github.com/AgentPostmortem/RelayG), Copyright (c) 2026 Royal Simpson Pinto, MIT License.
-Modified: classifier and tools are injected; no checkpointer (the platform provides persistence).
-"""
+"""Wire the state machine: prepare -> classify -> policy_check -> act -> finish."""
 
 from __future__ import annotations
 

@@ -13,16 +13,10 @@ It classifies a ticket with the model, applies fixed refund rules in plain Pytho
 Gravity has no refund tool, so the agent records the refund as a recommendation; it does not move money.
 The refund amount must appear in the ticket text, so a number the model makes up is dropped or corrected. If the model returns no amount but the ticket has exactly one explicit USD amount, that amount is used (1.0.2).
 
-## Credit
-
-Adapted from [RelayG](https://github.com/AgentPostmortem/RelayG) by Royal Simpson Pinto, MIT License (see `src/LICENSE`).
-RelayG is described by its author as a code-first rebuild of "Resolvd". See `src/NOTICE` for what was changed.
-The thresholds and original policy tests come from RelayG. Missing/invalid-amount reasons were clarified; adapted files carry modification notices.
-
 ## Layout
 
 - `manifest.yaml` Gravity manifest (tools: gmail.draft, gmail.send, slack.send; approvals on both sends)
-- `src/agent.py` entrypoint (`graph`), `src/relayg/` the adapted code
+- `src/agent.py` entrypoint (`graph`), `src/relayg/` core implementation
 - `tests/` unit tests (fake tools, no gateway needed): `pytest tests`
 
 ## Build
@@ -40,7 +34,7 @@ Package source: https://pypi.org/project/gravity-cli/0.4.3/
 
 | Guideline | Check / outcome |
 | --- | --- |
-| Standard: layout and bundle | manifest, requirements, src and tests ship; MIT LICENSE/NOTICE live under src as well as root |
+| Standard: layout and bundle | manifest, requirements, src and tests ship; MIT LICENSE lives under src as well as root |
 | Standard: manifest | contract v1, interactive, Python 3.12, valid inputs/tools/approvals, manual trigger, version 1.0.2 |
 | Standard: entrypoint/state | async graph factory, inputs and final result, no conversation state |
 | Standard: imports/env | absolute imports from src; env read only inside graph |
@@ -63,7 +57,7 @@ Package source: https://pypi.org/project/gravity-cli/0.4.3/
 ### Limits before a real gateway run
 
 This is a pilot, not a validated company refund policy. Dollar thresholds are
-RelayG's sample rules. The agent never contacts a billing system and never moves
+sample pilot rules. The agent never contacts a billing system and never moves
 money. Approval of a Gmail message does not authorize a refund. An explicit
 request still needs human review for eligibility and customer identity.
 

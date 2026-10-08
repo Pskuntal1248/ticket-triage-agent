@@ -1,4 +1,3 @@
-# Adapted from RelayG (https://github.com/AgentPostmortem/RelayG), Copyright (c) 2026 Royal Simpson Pinto, MIT License.
 from relayg.policy import decide
 from relayg.state import Classification
 

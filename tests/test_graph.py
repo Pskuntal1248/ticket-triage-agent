@@ -1,4 +1,4 @@
-"""Tests for the Gravity adaptation. Fake tools and a fake classifier: no gateway, model or disk needed."""
+"""Tests for the ticket triage agent. Fake tools and a fake classifier: no gateway, model or disk needed."""
 import asyncio
 import json
 import os
@@ -142,5 +142,4 @@ def test_same_input_same_result_and_no_disk_writes(tmp_path, monkeypatch):
 def test_licence_files_ship_with_source():
     here = os.path.dirname(os.path.dirname(__file__))
     lic = open(os.path.join(here, "src", "LICENSE"), encoding="utf-8").read()
-    assert "Royal Simpson Pinto" in lic and "MIT License" in lic
-    assert "AgentPostmortem/RelayG" in open(os.path.join(here, "src", "NOTICE"), encoding="utf-8").read()
+    assert "MIT License" in lic

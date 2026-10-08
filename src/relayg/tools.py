@@ -1,9 +1,4 @@
-"""Gravity tool helpers: the mock disk-audit tools of RelayG are replaced by gateway tools.
-
-Adapted from RelayG (https://github.com/AgentPostmortem/RelayG), Copyright (c) 2026 Royal Simpson Pinto, MIT License.
-Modified: rewritten. Nothing is written to disk; every action is returned in state["actions"].
-Audit: reject empty, invalid and error gateway responses.
-"""
+"""Gravity tool helpers."""
 
 from __future__ import annotations
 

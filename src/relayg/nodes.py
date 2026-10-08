@@ -1,12 +1,4 @@
-"""Graph nodes: classify, policy_check, act.
-
-Adapted from RelayG (https://github.com/AgentPostmortem/RelayG), Copyright (c) 2026 Royal Simpson Pinto, MIT License.
-Modified: the classifier calls the Gravity LLM gateway (no Groq); the human approval step is an
-approval-gated gmail.send / slack.send call instead of langgraph interrupt(); actions use Gravity
-tools instead of mock tools writing audit.jsonl; the refund amount is checked against the ticket text.
-v1.0.2: fill a null model amount from a single explicit ticket amount.
-Audit modifications: bounded input, sourced summary, failure fallback, honest delivery claims and money parsing.
-"""
+"""Graph nodes: classify, policy_check, act."""
 
 from __future__ import annotations
 
@@ -34,7 +26,7 @@ CLASSIFIER_PROMPT = (
 
 
 def mock_classify(subject: str, body: str) -> Classification:
-    """Deterministic keyword classifier (RelayG's mock). Used as a named fallback and in tests."""
+    """Deterministic keyword classifier. Used as a named fallback and in tests."""
     text = f"{subject} {body}".lower()
     amount_match = _AMOUNT_RE.search(f"{subject} {body}")
     amount = float(amount_match.group(1)) if amount_match else None

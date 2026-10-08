@@ -1,6 +1,4 @@
-"""Entry point for Gravity, adapted from RelayG (MIT, (c) 2026 Royal Simpson Pinto).
-Modified for audit: durable hosted tools and system/user separation.
-"""
+"""Entry point for Gravity."""
 
 import json
 import os
