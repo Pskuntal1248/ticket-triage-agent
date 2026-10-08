@@ -122,3 +122,53 @@ def test_invented_refund_intent_not_accepted():
 def test_unknown_amount_reason_honest():
     r=run('Refund','Please refund me.',make_tools())
     assert 'missing' in r['policy_reason']
+
+
+
+# v1.0.2 regression: live run returned null amount for "charged $30 twice".
+def _null_classifier(intent="refund_request", amount=None):
+    async def c(subject, body):
+        return Classification(intent=intent, urgency="medium", refund_amount=amount)
+    return c
+
+@pytest.mark.parametrize('body,decision,amount', [
+    ('I was charged $30 twice, please refund', 'auto_approve', 30.0),
+    ('I was charged $120 twice, please refund', 'needs_approval', 120.0),
+    ('Charged $350 twice, I want a refund', 'escalate', 350.0),
+])
+def test_null_model_amount_filled_from_single_ticket_amount(body, decision, amount):
+    r = run('Refund request', body, make_tools(), classifier=_null_classifier())
+    assert r['refund_amount'] == amount and r['policy_decision'] == decision
+    assert any('no amount' in n for n in r['notes'])
+
+def test_twice_is_not_multiplied():
+    r = run('Refund request', 'I was charged $30 twice, please refund', make_tools(), classifier=_null_classifier(amount=60.0))
+    assert r['refund_amount'] == 30.0
+
+def test_null_amount_two_amounts_stays_manual():
+    r = run('Refund', 'Charged $30 and $45, please refund', make_tools(), classifier=_null_classifier())
+    assert r['refund_amount'] is None and r['policy_decision'] == 'no_refund'
+    assert any('ambiguous' in n for n in r['notes'])
+
+@pytest.mark.parametrize('body', ['please refund me, I was charged twice', 'refund the $1,200 charge', 'refund $12.345', 'refund $0'])
+def test_null_amount_no_valid_amount_stays_manual(body):
+    r = run('Refund', body, make_tools(), classifier=_null_classifier())
+    assert r['refund_amount'] is None and r['policy_decision'] == 'no_refund'
+
+def test_invented_amount_still_dropped_or_corrected():
+    r = run('Refund', 'please refund me, charged twice', make_tools(), classifier=_null_classifier(amount=500.0))
+    assert r['refund_amount'] is None
+    r = run('Refund', 'please refund $30', make_tools(), classifier=_null_classifier(amount=500.0))
+    assert r['refund_amount'] == 30.0
+
+def test_null_amount_non_refund_intent_untouched():
+    r = run('Q', 'Why was I charged $30 twice? refund policy?', make_tools(), classifier=_null_classifier(intent='question'))
+    assert r['refund_amount'] is None
+
+@pytest.mark.parametrize('body,amt', [('Please refund $30, thanks', 30.0), ('refund $30. Thanks', 30.0), ('I paid $30, refund me', 30.0), ('refund (USD 30)', 30.0)])
+def test_trailing_punctuation_amount(body, amt):
+    assert mock_classify('Refund', body).refund_amount == amt
+
+@pytest.mark.parametrize('body', ['Refund $1,200 please', 'refund $1,2', 'refund $12.345'])
+def test_thousands_and_extra_decimals_still_rejected(body):
+    assert mock_classify('Refund', body).refund_amount is None
