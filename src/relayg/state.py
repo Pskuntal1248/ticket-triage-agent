@@ -2,12 +2,12 @@
 
 Adapted from RelayG (https://github.com/AgentPostmortem/RelayG), Copyright (c) 2026 Royal Simpson Pinto, MIT License.
 Modified: added `inputs`, `result`, `classifier` and `notes` for the Gravity runtime.
+Audit: finite nonnegative amounts, input limits, replace rather than accumulate per-run actions.
 """
 
 from __future__ import annotations
 
-import operator
-from typing import Annotated, Any, Literal, TypedDict
+from typing import Any, Literal, TypedDict
 
 from pydantic import BaseModel, Field
 
@@ -23,6 +23,8 @@ class Classification(BaseModel):
     urgency: Urgency = Field(description="How urgent the ticket is.")
     refund_amount: float | None = Field(
         default=None,
+        ge=0,
+        allow_inf_nan=False,
         description="Refund amount in USD if the customer explicitly asks for one, else null.",
     )
 
@@ -41,6 +43,8 @@ class TicketState(TypedDict, total=False):
     classifier: str  # "model" or "keyword-fallback"
     policy_decision: PolicyDecision
     policy_reason: str
+    input_valid: bool
+    input_error: str
     approved: bool
-    actions: Annotated[list[dict], operator.add]
-    notes: Annotated[list[str], operator.add]
+    actions: list[dict]
+    notes: list[str]
