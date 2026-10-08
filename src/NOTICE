@@ -14,3 +14,4 @@ Audit update (1.0.1, 2026-10-08): durable hosted tools with local MCP fallback,
 system/user prompt separation, bounded inputs, conservative money grounding,
 sourced summary, named unavailable actions, honest draft language, tool-failure
 fallbacks and regression tests. No refund API or financial action was added.
+Update (1.0.2, 2026-10-08): refund amount filled from a single explicit ticket amount when the model returns null (found in live run).
