@@ -11,7 +11,7 @@ It classifies a ticket with the model, applies fixed refund rules in plain Pytho
 | over $200 | Slack escalation attempted (gated `slack.send`, optional channel); draft reports whether delivery succeeded |
 
 Gravity has no refund tool, so the agent records the refund as a recommendation; it does not move money.
-The refund amount must appear in the ticket text, so a number the model makes up is dropped or corrected.
+The refund amount must appear in the ticket text, so a number the model makes up is dropped or corrected. If the model returns no amount but the ticket has exactly one explicit USD amount, that amount is used (1.0.2).
 
 ## Credit
 
@@ -41,7 +41,7 @@ Package source: https://pypi.org/project/gravity-cli/0.4.3/
 | Guideline | Check / outcome |
 | --- | --- |
 | Standard: layout and bundle | manifest, requirements, src and tests ship; MIT LICENSE/NOTICE live under src as well as root |
-| Standard: manifest | contract v1, interactive, Python 3.12, valid inputs/tools/approvals, manual trigger, version 1.0.1 |
+| Standard: manifest | contract v1, interactive, Python 3.12, valid inputs/tools/approvals, manual trigger, version 1.0.2 |
 | Standard: entrypoint/state | async graph factory, inputs and final result, no conversation state |
 | Standard: imports/env | absolute imports from src; env read only inside graph |
 | Standard: tools/models | only declared gateway tools and GRAVITY_LLM_URL; hosted gravity.tools() with local-only MCP fallback |
