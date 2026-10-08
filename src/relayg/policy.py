@@ -1,7 +1,7 @@
 """Pure Python refund policy rules. No LLM, no I/O, fully testable.
 
 Adapted from RelayG (https://github.com/AgentPostmortem/RelayG), Copyright (c) 2026 Royal Simpson Pinto, MIT License.
-Unchanged apart from this notice and the import path.
+Modified: import path and honest missing-amount/invalid-amount reasons; thresholds unchanged.
 """
 
 from __future__ import annotations
@@ -22,8 +22,10 @@ def decide(classification: Classification) -> tuple[PolicyDecision, str]:
       - amount > $200: escalate
     """
     amount = classification.refund_amount
-    if classification.intent != "refund_request" or amount is None:
-        return "no_refund", "Not a refund request; reply normally."
+    if classification.intent != "refund_request":
+        return "no_refund", "Not an explicit refund request; draft a reply."
+    if amount is None or amount <= 0:
+        return "no_refund", "Refund amount is missing or invalid; manual review needed, no refund recommendation."
     if amount < AUTO_APPROVE_LIMIT:
         return "auto_approve", f"${amount:.2f} is under the ${AUTO_APPROVE_LIMIT:.0f} auto-approval limit."
     if amount <= HUMAN_APPROVAL_LIMIT:
